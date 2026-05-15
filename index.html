@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Luiz Felipe | Desenvolvedor de Software</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --card: #1a1a26;
+      --accent: #7c3aed;
+      --accent2: #a855f7;
+      --pink: #ec4899;
+      --green: #10b981;
+      --text: #e8e8f0;
+      --muted: #7070a0;
+      --border: #2a2a40;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      overflow-x: hidden;
+    }
+
+    /* NOISE TEXTURE */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* GLOW ORBS */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: rgba(124, 58, 237, 0.15);
+      top: -100px; left: -100px;
+      animation: drift1 8s ease-in-out infinite alternate;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: rgba(236, 72, 153, 0.1);
+      bottom: -100px; right: -100px;
+      animation: drift2 10s ease-in-out infinite alternate;
+    }
+    @keyframes drift1 { to { transform: translate(60px, 80px); } }
+    @keyframes drift2 { to { transform: translate(-60px, -80px); } }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 60px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--accent2); }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* SECTIONS */
+    section { position: relative; z-index: 1; }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 60px 80px;
+    }
+    .hero-content { max-width: 800px; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(124, 58, 237, 0.15);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      color: var(--accent2);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    h1 .name-highlight {
+      background: linear-gradient(135deg, var(--accent2), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 560px;
+      margin-bottom: 40px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent2);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      display: flex; gap: 48px; margin-top: 64px;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+    .stat-item { }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SECTION HEADERS */
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .section-tag {
+      display: inline-block;
+      color: var(--accent2);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text);
+    }
+
+    /* PROJECTS */
+    #projetos {
+      padding: 100px 60px;
+      background: var(--surface);
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--pink));
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .project-card:hover::before { transform: scaleX(1); }
+    .project-card:hover {
+      border-color: rgba(124, 58, 237, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+    .project-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .project-type {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+    .project-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .project-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .project-tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 24px;
+    }
+    .tag {
+      background: rgba(124, 58, 237, 0.1);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      color: var(--accent2);
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+    .project-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .version-badge {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .project-link {
+      color: var(--accent2);
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: flex; align-items: center; gap: 4px;
+      transition: gap 0.2s;
+    }
+    .project-link:hover { gap: 8px; }
+
+    /* SKILLS */
+    #habilidades {
+      padding: 100px 60px;
+    }
+    .skills-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+    }
+    .skill-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 16px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .skill-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .skill-emoji { font-size: 2rem; display: block; margin-bottom: 8px; }
+    .skill-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* SOBRE */
+    #sobre {
+      padding: 100px 60px;
+      background: var(--surface);
+    }
+    .sobre-content {
+      max-width: 800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .sobre-text { }
+    .sobre-text p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .sobre-info { }
+    .info-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .info-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .info-value {
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 40px 60px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative; z-index: 1;
+    }
+    .footer-text {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent2); }
+
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      #hero, #projetos, #habilidades, #sobre { padding-left: 24px; padding-right: 24px; }
+      .sobre-content { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+      .hero-stats { gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <nav>
+    <div class="nav-logo">Luiz<span>If07</span></div>
+    <div class="nav-links">
+      <a href="#projetos">Projetos</a>
+      <a href="#habilidades">Skills</a>
+      <a href="#sobre">Sobre</a>
+      <a href="https://github.com/LuizIf07" target="_blank">GitHub</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-content">
+      <div class="hero-tag">Disponível para oportunidades</div>
+      <h1>
+        Luiz<br/>
+        <span class="name-highlight">Felipe</span><br/>
+        Cunha
+      </h1>
+      <p class="hero-desc">
+        Estudante de Desenvolvimento de Software apaixonado por construir soluções elegantes. 
+        Transformando ideias em código desde o início da minha jornada na tecnologia.
+      </p>
+      <div class="hero-actions">
+        <a href="#projetos" class="btn-primary">Ver Projetos</a>
+        <a href="https://github.com/LuizIf07" target="_blank" class="btn-outline">GitHub →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">4+</span>
+          <span class="stat-label">Projetos</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Tecnologias</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Dedicação</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJETOS -->
+  <section id="projetos">
+    <div class="section-header">
+      <div class="section-tag">// portfólio</div>
+      <h2 class="section-title">Meus Projetos</h2>
+    </div>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <span class="project-icon">🧮</span>
+        <div class="project-type">Acadêmico</div>
+        <div class="project-name">Calculadora Python</div>
+        <p class="project-desc">Calculadora de terminal com operações aritméticas completas e histórico de cálculos. Projeto desenvolvido para praticar lógica e estrutura de código em Python.</p>
+        <div class="project-tags">
+          <span class="tag">Python 3</span>
+          <span class="tag">Terminal</span>
+          <span class="tag">v1.0</span>
+        </div>
+        <div class="project-footer">
+          <span class="version-badge">Versão 1.0</span>
+          <a href="https://github.com/LuizIf07" class="project-link">Ver código →</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <span class="project-icon">🗃️</span>
+        <div class="project-type">Acadêmico</div>
+        <div class="project-name">Sistema de Cadastro</div>
+        <p class="project-desc">Sistema CRUD completo com armazenamento em SQLite. Permite criar, listar, atualizar e deletar registros via interface de terminal interativa.</p>
+        <div class="project-tags">
+          <span class="tag">Python 3</span>
+          <span class="tag">SQLite</span>
+          <span class="tag">CRUD</span>
+        </div>
+        <div class="project-footer">
+          <span class="version-badge">Versão 1.0</span>
+          <a href="https://github.com/LuizIf07" class="project-link">Ver código →</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <span class="project-icon">🌐</span>
+        <div class="project-type">Pessoal</div>
+        <div class="project-name">Portfólio Web</div>
+        <p class="project-desc">Site pessoal de apresentação profissional. Design moderno com tema escuro, animações CSS e responsividade completa. Hospedado via GitHub Pages.</p>
+        <div class="project-tags">
+          <span class="tag">HTML5</span>
+          <span class="tag">CSS3</span>
+          <span class="tag">JavaScript</span>
+        </div>
+        <div class="project-footer">
+          <span class="version-badge">Versão 1.0</span>
+          <a href="https://luizif07.github.io" class="project-link">Ver ao vivo →</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <span class="project-icon">💼</span>
+        <div class="project-type">Pessoal</div>
+        <div class="project-name">Projeto Ione</div>
+        <p class="project-desc">Projeto de desenvolvimento web com foco em estruturação de páginas e boas práticas de HTML/CSS. Um dos primeiros projetos versionados no GitHub.</p>
+        <div class="project-tags">
+          <span class="tag">HTML5</span>
+          <span class="tag">CSS3</span>
+          <span class="tag">Git</span>
+        </div>
+        <div class="project-footer">
+          <span class="version-badge">Versão 1.0</span>
+          <a href="https://github.com/LuizIf07/Projeto-Ione-" class="project-link">Ver código →</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HABILIDADES -->
+  <section id="habilidades">
+    <div class="section-header">
+      <div class="section-tag">// stack</div>
+      <h2 class="section-title">Habilidades</h2>
+    </div>
+    <div class="skills-container">
+      <div class="skills-grid">
+        <div class="skill-item">
+          <span class="skill-emoji">🐍</span>
+          <div class="skill-name">Python</div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-emoji">🌐</span>
+          <div class="skill-name">HTML5</div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-emoji">🎨</span>
+          <div class="skill-name">CSS3</div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-emoji">⚡</span>
+          <div class="skill-name">JavaScript</div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-emoji">🔀</span>
+          <div class="skill-name">Git</div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-emoji">🐙</span>
+          <div class="skill-name">GitHub</div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-emoji">🗄️</span>
+          <div class="skill-name">SQLite</div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-emoji">💻</span>
+          <div class="skill-name">VS Code</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="sobre">
+    <div class="section-header">
+      <div class="section-tag">// sobre.md</div>
+      <h2 class="section-title">Sobre Mim</h2>
+    </div>
+    <div class="sobre-content">
+      <div class="sobre-text">
+        <p>Olá! Sou o <strong style="color:var(--text)">Luiz Felipe Rocha Tavares da Cunha</strong>, estudante de Desenvolvimento de Software apaixonado por tecnologia.</p>
+        <p>Estou construindo minha jornada na área de tech, desenvolvendo projetos que combinam lógica, criatividade e boas práticas de desenvolvimento.</p>
+        <p>Meu objetivo é me tornar um desenvolvedor completo, sempre buscando aprender novas tecnologias e resolver problemas reais com código.</p>
+      </div>
+      <div class="sobre-info">
+        <div class="info-item">
+          <span class="info-label">Nome</span>
+          <span class="info-value">Luiz Felipe R. T. Cunha</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Curso</span>
+          <span class="info-value">Desenvolvimento de Software</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">GitHub</span>
+          <span class="info-value">@LuizIf07</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Status</span>
+          <span class="info-value" style="color:var(--green)">● Disponível</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-text">© 2026 Luiz Felipe — Feito com 💜 e muito café</div>
+    <div class="footer-links">
+      <a href="https://github.com/LuizIf07" target="_blank">GitHub</a>
+      <a href="https://linkedin.com/in/luizfelipe" target="_blank">LinkedIn</a>
+    </div>
+  </footer>
+
+</body>
+</html>
